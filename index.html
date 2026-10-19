@@ -229,12 +229,12 @@ var SECTIONS=[
  act({title:'8 · Buddy’m',kick:'KİLİTLİ',badge:'KAPANIŞTA EKLENİR',items:[{t:'lock',desc:'Hesap verebilirlik ortağım',day:0}]})
 ]},
 {id:'b',kicker:'B YÜZÜ · BİRLİKTE ANLAŞTIĞIMIZ',title:'Takım Sözleşmemiz',num:'B',blocks:[
- act({title:'Sözleşme bilgisi',kick:'TAKIM SÖZLEŞMESİ',instr:'Lider söz verirse marka olur, takım da söz verirse sözleşme olur. Lider tek başına doldurmaz: takım sütunları bilerek kapalıdır, takım toplantısında açılır.',items:[inp('tarihB','Tarih')]}),
+ act({title:'Sözleşme bilgisi',kick:'TAKIM SÖZLEŞMESİ',instr:'Lider söz verirse marka olur, takım da söz verirse sözleşme olur. Lider tek başına doldurmaz.',items:[inp('tarihB','Tarih')]}),
  sozRow(1,'Güven','sg1','haftalık check-in, ilk pazartesi'),
  sozRow(2,'Hesap verebilirlik','sg2','aylık geri bakış'),
- lock('3 · Tartışabilme','Gün 3’te açılır',3),
- lock('4 · Bağlılık','Gün 3’te açılır',3),
- lock('5 · Sonuç','Gün 3’te açılır',3)
+ lock('3 · Tartışabilme','Takım sözleşmesi alanı',3),
+ lock('4 · Bağlılık','Takım sözleşmesi alanı',3),
+ lock('5 · Sonuç','Takım sözleşmesi alanı',3)
 ]}
 ];
 
@@ -343,7 +343,7 @@ window.addEventListener('beforeprint',function(){Array.prototype.forEach.call(do
 window.addEventListener('afterprint',function(){Array.prototype.forEach.call(document.querySelectorAll('details'),function(d){d.open=d.dataset.was==='1';});});
 document.getElementById('b-print').addEventListener('click',function(){closeMenu();try{window.print();}catch(e){}toast('Yazdırma açılmazsa “Notlarımı dosya olarak indir” seçeneğini kullan.');});
 function snapshot(){var c=document.documentElement.cloneNode(true);c.querySelectorAll('script,.bar,.menu,.modal,.toast,input[type=file]').forEach(function(n){n.remove();});c.querySelectorAll('details').forEach(function(d){d.setAttribute('open','');});c.querySelectorAll('textarea,input[type=text],select,input[type=range],.x,.btn,.chip:not([aria-pressed=true])').forEach(function(n){n.remove();});c.querySelectorAll('.pv').forEach(function(n){n.style.display='block';});var st=c.querySelector('style');st.textContent+='.pv{display:block!important;white-space:pre-wrap;border:1px solid #bbb;border-radius:6px;padding:6px 8px;min-height:30px}.chk input{pointer-events:none}';return '<!DOCTYPE html>\n'+c.outerHTML;}
-function saveFile(name,data,okmsg){window.claude.use('downloads').then(function(dl){if(!dl){toast('Bu görünümde dosya indirme kullanılamıyor.');return;}return dl.save({filename:name,data:data}).then(function(){toast(okmsg);}).catch(function(e){if(!e||e.code!=='declined')toast('İndirme yapılamadı.');});}).catch(function(){toast('İndirme yapılamadı.');});}
+function saveFile(name,data,okmsg){function fb(){try{var bl=new Blob([data],{type:name.slice(-5)==='.json'?'application/json':'text/html'});var u=URL.createObjectURL(bl);var a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(function(){URL.revokeObjectURL(u);},1000);toast(okmsg);}catch(e){toast('İndirme yapılamadı.');}}if(window.claude&&window.claude.use){window.claude.use('downloads').then(function(dl){if(!dl){fb();return;}return dl.save({filename:name,data:data}).then(function(){toast(okmsg);}).catch(function(e){if(!e||e.code!=='declined')toast('İndirme yapılamadı.');});}).catch(function(){fb();});}else{fb();}}
 document.getElementById('b-html').addEventListener('click',function(){closeMenu();saveFile('Liderlik-Markam-Notlarim.html',snapshot(),'Dosya hazır. Açıp Yazdır → PDF olarak kaydedebilirsin.');});
 document.getElementById('b-bak').addEventListener('click',function(){closeMenu();saveFile('liderlik-markam-yedek.json',JSON.stringify(S),'Yedek hazır.');});
 document.getElementById('b-yuk').addEventListener('click',function(){closeMenu();document.getElementById('file').click();});
