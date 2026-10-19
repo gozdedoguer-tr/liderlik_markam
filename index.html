@@ -112,6 +112,7 @@ svg.ch{width:100%;height:auto;display:block;background:var(--card);border:1px so
  .banner{margin:20px 0 10px}
 }
 .lock{border:1.5px dashed var(--line);border-radius:12px;padding:14px;color:var(--muted);background:var(--tint2);font-size:16px}.lock b{color:var(--ink)}.ro{white-space:pre-wrap;border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--tint2);min-height:36px}
+.hlp{font-size:14px;color:var(--muted);margin:-2px 0 6px;line-height:1.4}textarea::placeholder,input::placeholder{color:var(--muted);opacity:.75;font-style:italic}
 </style>
 </head>
 <body>
@@ -192,6 +193,7 @@ function sozRow(n,title,id,ex){return act({title:n+' · '+title,kick:'TAKIM SÖZ
   ta(id+'f','Nasıl fark ederiz? Ne sıklıkta? (Örn: '+ex+')',2)]});}
 var SECTIONS=[
 {id:'a',kicker:'A YÜZÜ · BENİM SÖZÜM',title:'Liderlik Markam',num:'A',blocks:[
+ act({title:'Nasıl kullanılır?',kick:'BAŞLARKEN',items:[{t:'html',html:'<ol style="margin:0 0 0 20px;padding:0;line-height:1.55"><li>Bu sayfayı bir kez baştan sona doldur. Her kutunun altındaki açıklama ne yazacağını söyler, silik örnekler sadece fikir verir; kendi cümlelerini yaz.</li><li>Kilitli kutular Gün 3 ve Gün 4’te, Buddy kapanışta açılacak. Şimdilik atla.</li><li>Yazdıkların sadece bu cihazda kalır. Kopyasını PDF olarak indir.</li></ol>'}]}),
  act({title:'Liderlik amacım ve markam',kick:'ÇERÇEVE',items:[
   inp('ad','Ad'),inp('tarihA','Tarih'),
   ta('amac','Liderlik ediyorum çünkü…',3),
@@ -256,7 +258,8 @@ var pv=el('div','pv');pv.textContent=arr.filter(Boolean).join('\n');draw();w.app
 if(it.ex)w.appendChild(mkACC('Örnekler','<ul>'+it.ex.map(function(e){return '<li>'+esc(e)+'</li>';}).join('')+'</ul>'));return w;}
 function items(parent,list,pre){list.forEach(function(it){parent.appendChild(item(it,pre||''));});}
 function item(it,pre){var id=it.id?pre+it.id:'';switch(it.t){
-case 'ta':return mkTA(id,it.label,it.rows,it.tag);case 'in':return mkIN(id,it.label);case 'sel':return mkSEL(id,it.label,it.opts);case 'chips':return mkCHIPS(id,it.label,it.opts,it.max);case 'chk':return mkCHK(id,it.label);case 'words':return mkWORDS(id,it.label,it.max);case 'acc':return mkACC(it.title,it.html);case 'link':return mkLINK(it.key,it.label);case 'list':return mkLIST(it);case 'chart':return mkCHART();
+case 'ta':return dec(mkTA(id,it.label,it.rows,it.tag),it);case 'in':return dec(mkIN(id,it.label),it);case 'sel':return mkSEL(id,it.label,it.opts);case 'chips':return mkCHIPS(id,it.label,it.opts,it.max);case 'chk':return mkCHK(id,it.label);case 'words':return dec(mkWORDS(id,it.label,it.max),it);case 'acc':return mkACC(it.title,it.html);case 'link':return mkLINK(it.key,it.label);case 'list':return mkLIST(it);case 'chart':return mkCHART();
+case 'html':var hh=el('div','fld');hh.innerHTML=it.html;return hh;
 case 'lock':var lk=el('div','lock');lk.innerHTML='🔒 <b>'+esc(it.desc)+'</b>'+(it.note?'<br>'+it.note:(it.day?'<br>Gün '+it.day+'’te açılır.':'<br>Kapanışta eklenir.'));return lk;
 case 'cards':return mkCARDS();
 case 'sub':var s=el('div','sub');s.appendChild(el('h4','',esc(it.title)));if(it.hint)s.appendChild(el('div','hint',esc(it.hint)));items(s,it.items,pre);return s;
@@ -288,19 +291,43 @@ rows();draw();return w;}
 
 // ---------- build page ----------
 
-function mkBound(o,key,label,rows,tag,single){var f=fieldWrap(label,tag);var t=document.createElement(single?'input':'textarea');if(single){t.type='text';}else{t.rows=rows||2;}var cid='c_'+Math.random().toString(36).slice(2);t.id=cid;t.value=o[key]||'';f.l.htmlFor=cid;var pv=el('div','pv');pv.textContent=t.value;t.addEventListener('input',function(){o[key]=t.value;pv.textContent=t.value;if(!single)grow(t);save();});f.w.appendChild(t);f.w.appendChild(pv);return f.w;}
+function mkBound(o,key,label,rows,tag,single,help,ph){var f=fieldWrap(label,tag);if(help){f.w.appendChild(el('div','hlp',esc(help)));}var t=document.createElement(single?'input':'textarea');if(single){t.type='text';}else{t.rows=rows||2;}var cid='c_'+Math.random().toString(36).slice(2);t.id=cid;t.value=o[key]||'';if(ph)t.placeholder=ph;f.l.htmlFor=cid;var pv=el('div','pv');pv.textContent=t.value;t.addEventListener('input',function(){o[key]=t.value;pv.textContent=t.value;if(!single)grow(t);save();});f.w.appendChild(t);f.w.appendChild(pv);return f.w;}
 function mkCARDS(){var w=el('div');var list=el('div');var add=el('button','btn','+ Yeni kişi kartı');add.type='button';
 function arr(){if(!Array.isArray(S.v.cards))S.v.cards=[];return S.v.cards;}
 function draw(){list.innerHTML='';var a=arr();if(!a.length)list.appendChild(el('div','hint','Henüz kart yok. Ekibindeki ilk kişi için bir kart aç.'));
 a.forEach(function(c,i){var p=el('div','person');p.appendChild(el('div','nm','Kart '+(i+1)));
 p.appendChild(mkBound(c,'ad','Kişi',1,null,true));p.appendChild(mkBound(c,'rol','Rol',1,null,true));p.appendChild(mkBound(c,'kusak','Kuşak (yalnızca başlangıç tahmini)',1,null,true));p.appendChild(mkBound(c,'tarih','Tarih',1,null,true));
-p.appendChild(mkBound(c,'varsayim','Varsayımım',3));p.appendChild(mkBound(c,'kanit','Buna neden inanıyorum? (kanıt)',2));
-p.appendChild(mkBound(c,'soru','Ona soracağım soru',2));p.appendChild(mkBound(c,'cevap','Cevabı',2));p.appendChild(mkBound(c,'taahhut','Taahhüdüm (davranış + ritim)',2));p.appendChild(mkBound(c,'gd','Gözden geçirme tarihi',1,null,true));
+p.appendChild(mkBound(c,'varsayim','Varsayımım',3,null,false,'Bu kişinin otonomi, gelişim, amaç ve iletişim ritmi hakkındaki hipotezin. Hüküm değil, tek cümle, yargısız (“inatçı” değil, “kendi yönteminde rahat”).'));p.appendChild(mkBound(c,'kanit','Buna neden inanıyorum? (kanıt)',2,null,false,'Varsayımını destekleyen gözlemin.'));
+p.appendChild(mkBound(c,'soru','Ona soracağım soru',2,null,false,'Yönlendirmeyen, açık bir soru.','Örnek: Bu işte sana en çok enerji veren ne?'));p.appendChild(mkBound(c,'cevap','Cevabı',2,null,false,'Kişinin kendi sözcükleriyle cevabı.'));p.appendChild(mkBound(c,'taahhut','Taahhüdüm (davranış + ritim)',2,null,false,'Davranış + ritim.','Örnek: İki haftada bir 15 dk birebir yaparım.'));p.appendChild(mkBound(c,'gd','Gözden geçirme tarihi',1,null,true));
 var del=el('button','btn ghost sm','Kartı sil');del.type='button';var armed=false;del.addEventListener('click',function(){if(!armed){armed=true;del.textContent='Emin misin? Tekrar dokun';setTimeout(function(){armed=false;del.textContent='Kartı sil';},3000);return;}arr().splice(i,1);draw();save();});
 var d=el('div','fld');d.appendChild(del);p.appendChild(d);list.appendChild(p);});
 Array.prototype.forEach.call(list.querySelectorAll('textarea'),grow);}
 add.addEventListener('click',function(){arr().push({});draw();save();var ins=list.querySelectorAll('.person');var last=ins[ins.length-1];if(last){var f=last.querySelector('input');if(f)f.focus();}});
 w.appendChild(list);var d2=el('div','fld');d2.appendChild(add);w.appendChild(d2);draw();return w;}
+
+var HELP={
+amac:['Bu rolü neden taşıdığını ve ekibinin hayatında bırakmak istediğin etkiyi yaz.'],
+marka:['Ekibinin seni tarif etmesini istediğin üç kelime.'],
+bc:['Seninle çalışan birinin günlük deneyimini tek cümleyle tamamla.'],
+cumle:['Ekibinin senden sık duyacağı, markanı taşıyan tek cümle.'],
+duymak:['Ekibin şu an senden duymayan ama duymaya ihtiyaç duyduğu şey.'],
+asla:['Markanı bozacak, aşmayacağın çizgi.'],
+hakan:['Hakan’ın yaklaşımından hangi noktada farklılaştığını yaz.'],
+b2e:['Değişim anında yargılamadan, doğal olarak ne yapıyorsun? (Teknik çözüme mi odaklanırsın, insanlara mı? Dans pistinde misin, balkonda mı?)'],
+b2o:['Tetikleyici + davranış + zaman/yer.','Örnek: Eğer bir değişimi duyurursam, o zaman aynı gün ekiple 15 dk “bu senin için ne demek?” konuşması koyarım.'],
+b2k:['Ekibin dışarıdan görebileceği somut bir davranış.','Örnek: Değişim toplantılarında ilk 10 dakikayı ben konuşmak yerine dinlerim.'],
+b3e:['Güven kurarken ve sorumluluk verirken doğal eğilimin ne? Yargılama.'],
+b3o:['Tetikleyici + davranış + zaman/yer.','Örnek: Eğer bir teslim tarihi kayarsa, o zaman aynı gün 10 dk birebir konuşup nedeni ve yeni tarihi birlikte netleştiririm.'],
+b3u:['Bu eğilime kaydığında ekibinin sana vereceği sinyal.'],
+b3yn:['Ekibinin otonomi, gelişim ve amaç duygusunu hangi davranışlarınla artıracaksın?'],
+b3m:['Motivasyonu düşüren, senin kaldırabileceğin bir engel.'],
+b3k:['Ekibin dışarıdan görebileceği somut bir davranış.','Örnek: Ayda bir her kişiyle 20 dk gelişim konuşması takvimde olur.'],
+sg1l:['','Örnek: Eğer bir hata yaparsam, o zaman ekibe 24 saat içinde açıkça söylerim.'],
+sg2l:['','Örnek: Eğer bir hata yaparsam, o zaman ekibe 24 saat içinde açıkça söylerim.'],
+sg1t:['Birlikte yazdığınız, herkesin kabul ettiği kural.','Örnek: Bir sorun fark eden herkes 24 saat içinde takım kanalına yazar.'],
+sg2t:['Birlikte yazdığınız, herkesin kabul ettiği kural.','Örnek: Bir sorun fark eden herkes 24 saat içinde takım kanalına yazar.']
+};
+function dec(w,it){var m=HELP[it.id];if(!m)return w;if(m[0]){var l=w.querySelector('label');var hp=el('div','hlp',esc(m[0]));l.parentNode.insertBefore(hp,l.nextSibling);}if(m[1]){var t=w.querySelector('textarea,input');if(t)t.placeholder=m[1];}return w;}
 function build(){var main=document.getElementById('main'),toc=document.getElementById('toc');main.innerHTML='';toc.innerHTML='';
 SECTIONS.forEach(function(sec){var b=el('section');b.id=sec.id;var bn=el('div','banner');bn.innerHTML='<div class="k">'+esc(sec.kicker)+'</div><h2>'+esc(sec.title)+'</h2>'+(sec.num?'<div class="gh" aria-hidden="true">'+sec.num+'</div>':'');b.appendChild(bn);
 sec.blocks.forEach(function(a){var c=el('div','act');var top=el('div','top');top.appendChild(el('span','kick',esc(a.kick||'ETKİNLİK')));if(a.badge)top.appendChild(el('span','pill',esc(a.badge)));c.appendChild(top);c.appendChild(el('h3','',esc(a.title)));if(a.instr)c.appendChild(el('p','instr',esc(a.instr)));items(c,a.items,a.title.replace(/\W/g,'').slice(0,8)+'_'===''?'':'');b.appendChild(c);});
