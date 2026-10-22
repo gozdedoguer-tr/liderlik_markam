@@ -193,7 +193,7 @@ function sozRow(n,title,id,ex){return act({title:n+' · '+title,kick:'TAKIM SÖZ
   ta(id+'f','Nasıl fark ederiz? Ne sıklıkta? (Örn: '+ex+')',2)]});}
 var SECTIONS=[
 {id:'a',kicker:'A YÜZÜ · BENİM SÖZÜM',title:'Liderlik Markam',num:'A',blocks:[
- act({title:'Nasıl kullanılır?',kick:'BAŞLARKEN',items:[{t:'html',html:'<ol style="margin:0 0 0 20px;padding:0;line-height:1.55"><li>Bu sayfayı bir kez baştan sona doldur. Her kutunun altındaki açıklama ne yazacağını söyler, silik örnekler sadece fikir verir; kendi cümlelerini yaz.</li><li>Kilitli kutular Gün 3 ve Gün 4’te, Buddy kapanışta açılacak. Şimdilik atla.</li><li>Yazdıkların sadece bu cihazda kalır. Kopyasını PDF olarak indir.</li></ol>'}]}),
+ act({title:'Nasıl kullanılır?',kick:'BAŞLARKEN',items:[{t:'html',html:'<ol style="margin:0 0 0 20px;padding:0;line-height:1.55"><li>Bu sayfayı bir kez baştan sona doldur. Her kutunun altındaki açıklama ne yazacağını söyler, silik örnekler sadece fikir verir; kendi cümlelerini yaz.</li><li>Kilitli kutular Gün 4’te, Buddy kapanışta açılacak. Şimdilik atla.</li><li>Yazdıkların sadece bu cihazda kalır. Kopyasını PDF olarak indir.</li></ol>'}]}),
  act({title:'Liderlik amacım ve markam',kick:'ÇERÇEVE',items:[
   inp('ad','Ad'),inp('tarihA','Tarih'),
   ta('amac','Liderlik ediyorum çünkü…',3),
@@ -220,10 +220,20 @@ var SECTIONS=[
  act({title:'Ekibindeki her kişi için bir kart',kick:'KİŞİ KARTI',badge:'HİPOTEZ, HÜKÜM DEĞİL',items:[cards(),
   acc('Yeni kart ne zaman açılır?','<ul><li>Yeni biri ekibe katıldığında</li><li>Birinin rolü değiştiğinde</li><li>Motivasyon düşüşü fark ettiğinde</li></ul>')]})
 ]},
+{id:'a45',kicker:'A YÜZÜ · BENİM SÖZÜM',title:'Konuşma ve Büyütme',num:'4',blocks:[
+ act({title:'4 · Konuşma kalitem',kick:'KUTU 4',instr:'Geri bildirim verirken ve alırken · çatışma · kanal',items:[
+  ta('b4e','Eğilimim',3),
+  ta('b4o','Önlemim: Eğer … o zaman …',3),
+  ta('b4k','Ekibin göreceği kanıt',2),
+  ta('b4u','Beni şu işaretle uyar',2)]}),
+ act({title:'5 · İnsanları büyütme tarzım',kick:'KUTU 5',instr:'Koçluk · delegasyon',items:[
+  ta('b5e','Eğilimim',3),
+  ta('b5o','Önlemim: Eğer … o zaman …',3),
+  ta('b5k','Ekibin göreceği kanıt',2),
+  ta('b5u','Beni şu işaretle uyar',2)]})
+]},
 {id:'kilit',kicker:'A YÜZÜ · KİLİTLİ',title:'Sonraki Günlerde Açılacak Kutular',num:'🔒',blocks:[
  act({title:'Baskı altındaki halim',kick:'KİLİTLİ',items:[{t:'lock',desc:'Öncesi, anında, sonrası: baskıyı nasıl taşırım?',note:'Daha sonra açılacak.'}]}),
- lock('4 · Konuşma kalitem','Geri bildirim verirken ve alırken · çatışma · kanal',3),
- lock('5 · İnsanları büyütme tarzım','Koçluk · delegasyon',3),
  lock('6 · Geleceği taşıma duruşum','Industry 5.0 · insan-AI · değişimi anlatma',4),
  lock('7 · DNA aynası','Markam DNA’nın hangi boyutlarını karşılıyor, boşluk nerede?',4),
  act({title:'8 · Buddy’m',kick:'KİLİTLİ',badge:'KAPANIŞTA EKLENİR',items:[{t:'lock',desc:'Hesap verebilirlik ortağım',day:0}]})
@@ -232,9 +242,9 @@ var SECTIONS=[
  act({title:'Sözleşme bilgisi',kick:'TAKIM SÖZLEŞMESİ',instr:'Lider söz verirse marka olur, takım da söz verirse sözleşme olur. Lider tek başına doldurmaz.',items:[inp('tarihB','Tarih')]}),
  sozRow(1,'Güven','sg1','haftalık check-in, ilk pazartesi'),
  sozRow(2,'Hesap verebilirlik','sg2','aylık geri bakış'),
- lock('3 · Tartışabilme','Takım sözleşmesi alanı',3),
- lock('4 · Bağlılık','Takım sözleşmesi alanı',3),
- lock('5 · Sonuç','Takım sözleşmesi alanı',3)
+ sozRow(3,'Tartışabilme','sg3','her toplantı sonunda 2 dk “katılmadığım nokta” turu'),
+ sozRow(4,'Bağlılık','sg4','karar sonrası 24 saat içinde yazılı özet'),
+ sozRow(5,'Sonuç','sg5','haftalık hedef panosu güncellemesi')
 ]}
 ];
 
@@ -325,7 +335,21 @@ b3k:['Ekibin dışarıdan görebileceği somut bir davranış.','Örnek: Ayda bi
 sg1l:['','Örnek: Eğer bir hata yaparsam, o zaman ekibe 24 saat içinde açıkça söylerim.'],
 sg2l:['','Örnek: Eğer bir hata yaparsam, o zaman ekibe 24 saat içinde açıkça söylerim.'],
 sg1t:['Birlikte yazdığınız, herkesin kabul ettiği kural.','Örnek: Bir sorun fark eden herkes 24 saat içinde takım kanalına yazar.'],
-sg2t:['Birlikte yazdığınız, herkesin kabul ettiği kural.','Örnek: Bir sorun fark eden herkes 24 saat içinde takım kanalına yazar.']
+sg2t:['Birlikte yazdığınız, herkesin kabul ettiği kural.','Örnek: Bir sorun fark eden herkes 24 saat içinde takım kanalına yazar.'],
+b4e:['Geri bildirim verirken, alırken ve çatışmada doğal eğilimin ne? Hangi kanalı (yüz yüze, mesaj, e-posta) tercih ediyorsun? Yargılama.'],
+b4o:['Tetikleyici + davranış + zaman/yer.','Örnek: Eğer bir ekip üyesinin işinde sorun görürsem, o zaman 48 saat içinde birebir, somut bir gözlemle geri bildirim veririm.'],
+b4k:['Ekibin dışarıdan görebileceği somut bir davranış.','Örnek: Geri bildirim alırken önce soru sorarım, savunmaya geçmem.'],
+b4u:['Bu eğilime kaydığında ekibinin sana vereceği sinyal.'],
+b5e:['Birini büyütürken doğal eğilimin ne: cevabı verir misin, soru mu sorarsın? İşi devrederken ne yaparsın? Yargılama.'],
+b5o:['Tetikleyici + davranış + zaman/yer.','Örnek: Eğer biri çözümü bana sormaya gelirse, o zaman önce “sen ne düşünüyorsun?” diye sorarım.'],
+b5k:['Ekibin dışarıdan görebileceği somut bir davranış.','Örnek: Devrettiğim işte sonucu ve sınırları netleştirir, yöntemine karışmam.'],
+b5u:['Bu eğilime kaydığında ekibinin sana vereceği sinyal.'],
+sg3l:['','Örnek: Eğer toplantıda biri sessiz kalırsa, o zaman ona doğrudan fikrini sorarım.'],
+sg3t:['Birlikte yazdığınız, herkesin kabul ettiği kural.','Örnek: Karar alınmadan önce herkes görüşünü söyler.'],
+sg4l:['','Örnek: Eğer bir karar alınırsa, o zaman 24 saat içinde kararı ve sorumlusunu yazılı paylaşırım.'],
+sg4t:['Birlikte yazdığınız, herkesin kabul ettiği kural.','Örnek: Karar alındıktan sonra itiraz eden de dahil herkes kararı destekler.'],
+sg5l:['','Örnek: Eğer bir hedef kayarsa, o zaman haftalık toplantının ilk gündem maddesi yaparım.'],
+sg5t:['Birlikte yazdığınız, herkesin kabul ettiği kural.','Örnek: Takım hedefleri herkesin göreceği yerde durur, haftalık güncellenir.']
 };
 function dec(w,it){var m=HELP[it.id];if(!m)return w;if(m[0]){var l=w.querySelector('label');var hp=el('div','hlp',esc(m[0]));l.parentNode.insertBefore(hp,l.nextSibling);}if(m[1]){var t=w.querySelector('textarea,input');if(t)t.placeholder=m[1];}return w;}
 function build(){var main=document.getElementById('main'),toc=document.getElementById('toc');main.innerHTML='';toc.innerHTML='';
